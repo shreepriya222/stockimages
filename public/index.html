@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image to GitHub</title>
+</head>
+<body>
+    <h2>Upload an Image to GitHub</h2>
+    <input type="file" id="fileInput">
+    <button onclick="uploadImage()">Upload</button>
+    <p id="status"></p>
+
+    <script>
+        async function uploadImage() {
+            const file = document.getElementById("fileInput").files[0];
+            if (!file) return alert("Please select an image!");
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            document.getElementById("status").innerText = "Uploading...";
+
+            const response = await fetch("/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                document.getElementById("status").innerHTML = 
+                    `Uploaded: <a href="${result.url}" target="_blank">View Image</a>`;
+            } else {
+                document.getElementById("status").innerText = "Upload failed!";
+            }
+        }
+    </script>
+</body>
+</html>
